@@ -143,7 +143,12 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   notice: {
-    paddingVertical: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 12,
+    backgroundColor: '#111',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#222',
   },
   noticeHeader: {
     flexDirection: 'row',
@@ -172,9 +177,7 @@ const styles = StyleSheet.create({
     color: '#94a3b8',
   },
   separator: {
-    height: 1,
-    backgroundColor: '#1f2937',
-    opacity: 0.5,
+    height: 12,
   },
   emptyContainer: {
     flexGrow: 1,
