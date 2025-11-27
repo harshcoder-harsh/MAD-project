@@ -58,7 +58,12 @@ export default function HomeScreen() {
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <View style={styles.header}>
-        <Image source={require('@/assets/images/icon.png')} style={styles.icon} />
+        <View style={styles.headerTop}>
+          <Image source={require('@/assets/images/icon.png')} style={styles.icon} />
+          <Pressable onPress={loadData} style={styles.refreshButton}>
+            <FontAwesome name="refresh" size={18} color="#3b82f6" />
+          </Pressable>
+        </View>
         <Text style={styles.title}>Hey there 👋</Text>
         <Text style={styles.subtitle}>Welcome to College Companion</Text>
       </View>
@@ -143,11 +148,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 24,
   },
+  headerTop: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    position: 'relative',
+  },
   icon: {
     width: 80,
     height: 80,
     marginBottom: 12,
     resizeMode: 'contain',
+  },
+  refreshButton: {
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    padding: 8,
   },
   title: {
     fontSize: 24,
