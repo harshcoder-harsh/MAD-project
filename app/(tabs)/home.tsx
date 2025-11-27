@@ -1,7 +1,8 @@
 import { loadFromStorage } from '@/utils/storage';
+import { getTodayDay } from '@/utils/dateUtils';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useRouter, useFocusEffect } from 'expo-router';
+import { useEffect, useState, useCallback } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 type TimetableEntry = {
@@ -34,9 +35,11 @@ export default function HomeScreen() {
   const [notesCount, setNotesCount] = useState(0);
   const todayDay = getTodayDay();
 
-  useEffect(() => {
-    loadData();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      loadData();
+    }, [])
+  );
 
   async function loadData() {
     const timetable = await loadFromStorage<TimetableEntry[]>('timetable:v1');
