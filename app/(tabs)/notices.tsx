@@ -44,13 +44,13 @@ export default function NoticesScreen() {
     setTitle('');
     setBody('');
     setError('');
-    await saveToStorage(STORAGE_KEY, newItems);
+    await saveToStorage(STORAGE_KEYS.NOTICES, newItems);
   }
 
   async function deleteNotice(id: string) {
     const newItems = items.filter((n) => n.id !== id);
     setItems(newItems);
-    await saveToStorage(STORAGE_KEY, newItems);
+    await saveToStorage(STORAGE_KEYS.NOTICES, newItems);
   }
 
   return (

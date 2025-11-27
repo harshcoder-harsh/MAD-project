@@ -79,7 +79,7 @@ export default function TimetableScreen() {
     }
 
     setEntries(updated);
-    await saveToStorage(STORAGE_KEY, updated);
+    await saveToStorage(STORAGE_KEYS.TIMETABLE, updated);
     setShowModal(false);
     setEditingEntry(null);
     setFormSubject('');
