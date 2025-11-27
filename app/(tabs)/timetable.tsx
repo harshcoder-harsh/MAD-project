@@ -3,7 +3,7 @@ import { getTodayDay } from '@/utils/dateUtils';
 import { loadFromStorage, saveToStorage } from '@/utils/storage';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useEffect, useMemo, useState } from 'react';
-import { FlatList, Modal, Pressable, View as RNView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { FlatList, Modal, Pressable, View as RNView, StyleSheet, Text, TextInput, View, TouchableWithoutFeedback } from 'react-native';
 
 type TimetableEntry = {
   id: string;
@@ -171,8 +171,10 @@ export default function TimetableScreen() {
       />
 
       <Modal visible={showModal} transparent animationType="slide">
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
+        <TouchableWithoutFeedback onPress={() => setShowModal(false)}>
+          <View style={styles.modalOverlay}>
+            <TouchableWithoutFeedback onPress={(e) => e.stopPropagation()}>
+              <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>{editingEntry ? 'Edit Class' : 'Add Class'}</Text>
             <TextInput
               placeholder="Subject"
@@ -205,8 +207,10 @@ export default function TimetableScreen() {
                 <Text style={styles.modalButtonText}>Save</Text>
               </Pressable>
             </RNView>
+              </View>
+            </TouchableWithoutFeedback>
           </View>
-        </View>
+        </TouchableWithoutFeedback>
       </Modal>
     </View>
   );
