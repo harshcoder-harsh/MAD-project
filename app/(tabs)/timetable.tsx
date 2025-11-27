@@ -161,8 +161,13 @@ export default function TimetableScreen() {
             </RNView>
           </RNView>
         )}
-        ListEmptyComponent={<Text style={styles.empty}>No classes for {selectedDay}</Text>}
-        contentContainerStyle={filtered.length === 0 ? styles.emptyContainer : undefined}
+        ListEmptyComponent={
+          <View style={styles.emptyContainer}>
+            <FontAwesome name="calendar-times-o" size={48} color="#64748b" />
+            <Text style={styles.empty}>No classes for {selectedDay}</Text>
+          </View>
+        }
+        contentContainerStyle={filtered.length === 0 ? styles.emptyListContainer : undefined}
       />
 
       <Modal visible={showModal} transparent animationType="slide">
@@ -369,14 +374,20 @@ const styles = StyleSheet.create({
   separator: {
     height: 12,
   },
-  emptyContainer: {
+  emptyListContainer: {
     flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
+  emptyContainer: {
+    alignItems: 'center',
+    paddingVertical: 40,
+  },
   empty: {
     opacity: 0.6,
     color: '#cbd5e1',
+    marginTop: 12,
+    fontSize: 14,
   },
 });
 
