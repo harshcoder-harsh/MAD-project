@@ -108,7 +108,10 @@ export default function HomeScreen() {
             ))}
           </View>
         ) : (
-          <Text style={styles.emptyText}>No classes scheduled for today</Text>
+          <View style={styles.emptyClassContainer}>
+            <FontAwesome name="calendar-times-o" size={32} color="#64748b" />
+            <Text style={styles.emptyText}>No classes scheduled for today</Text>
+          </View>
         )}
       </View>
 
@@ -254,10 +257,15 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginTop: 4,
   },
+  emptyClassContainer: {
+    alignItems: 'center',
+    paddingVertical: 24,
+  },
   emptyText: {
     color: '#64748b',
     textAlign: 'center',
-    padding: 20,
+    marginTop: 8,
+    fontSize: 14,
   },
   quickActions: {
     flexDirection: 'row',
