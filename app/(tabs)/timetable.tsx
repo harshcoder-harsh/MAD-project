@@ -1,5 +1,5 @@
-import { Text as ThemedText, View as ThemedView } from '@/components/Themed';
-import React, { useMemo, useState } from 'react';
+import { loadFromStorage, saveToStorage } from '@/utils/storage';
+import React, { useEffect, useMemo, useState } from 'react';
 import { FlatList, View as RNView, StyleSheet, Text, View } from 'react-native';
 
 type TimetableEntry = {
@@ -10,7 +10,7 @@ type TimetableEntry = {
   room: string;
 };
 
-const MOCK_TIMETABLE: TimetableEntry[] = [
+const DEFAULT_TIMETABLE: TimetableEntry[] = [
   { id: '1', day: 'Mon', time: '09:00-10:00', subject: 'Mathematics', room: 'A101' },
   { id: '2', day: 'Mon', time: '10:00-11:00', subject: 'ADA', room: 'B202' },
   { id: '3', day: 'Tue', time: '11:00-12:00', subject: 'AP', room: 'A103' },
@@ -19,14 +19,28 @@ const MOCK_TIMETABLE: TimetableEntry[] = [
   { id: '6', day: 'Fri', time: '12:00-13:00', subject: 'Contest', room: 'E104' },
 ];
 
+const STORAGE_KEY = 'timetable:v1';
 const DAYS: TimetableEntry['day'][] = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 export default function TimetableScreen() {
   const [selectedDay, setSelectedDay] = useState<TimetableEntry['day']>('Mon');
+  const [entries, setEntries] = useState<TimetableEntry[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      const saved = await loadFromStorage<TimetableEntry[]>(STORAGE_KEY);
+      if (saved && saved.length > 0) {
+        setEntries(saved);
+      } else {
+        setEntries(DEFAULT_TIMETABLE);
+        await saveToStorage(STORAGE_KEY, DEFAULT_TIMETABLE);
+      }
+    })();
+  }, []);
 
   const filtered = useMemo(
-    () => MOCK_TIMETABLE.filter((e) => e.day === selectedDay),
-    [selectedDay]
+    () => entries.filter((e) => e.day === selectedDay),
+    [entries, selectedDay]
   );
 
   return (
