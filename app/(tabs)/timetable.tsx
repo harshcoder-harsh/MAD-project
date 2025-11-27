@@ -1,8 +1,8 @@
-import { loadFromStorage, saveToStorage } from '@/utils/storage';
 import { getTodayDay } from '@/utils/dateUtils';
-import React, { useEffect, useMemo, useState } from 'react';
-import { FlatList, View as RNView, StyleSheet, Text, View, TextInput, Pressable, Modal } from 'react-native';
+import { loadFromStorage, saveToStorage } from '@/utils/storage';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { useEffect, useMemo, useState } from 'react';
+import { FlatList, Modal, Pressable, View as RNView, StyleSheet, Text, TextInput, View } from 'react-native';
 
 type TimetableEntry = {
   id: string;
@@ -279,7 +279,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 12,
-    paddingHorizontal: 10,
+    paddingHorizontal: 12,
+    backgroundColor: '#111',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#222',
   },
   itemContent: {
     flex: 1,
@@ -363,9 +367,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   separator: {
-    height: 1,
-    opacity: 0.2,
-    backgroundColor: '#1f2937',
+    height: 12,
   },
   emptyContainer: {
     flexGrow: 1,
