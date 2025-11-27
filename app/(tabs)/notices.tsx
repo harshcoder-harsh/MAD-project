@@ -18,6 +18,7 @@ export default function NoticesScreen() {
   const [items, setItems] = useState<Notice[]>([]);
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
+  const [error, setError] = useState('');
 
   useEffect(() => {
     (async () => {
@@ -27,7 +28,11 @@ export default function NoticesScreen() {
   }, []);
 
   async function addNotice() {
-    if (!title.trim() || !body.trim()) return;
+    setError('');
+    if (!title.trim() || !body.trim()) {
+      setError('Please fill in both title and body');
+      return;
+    }
     const next: Notice = {
       id: String(Date.now()),
       title: title.trim(),
@@ -38,6 +43,7 @@ export default function NoticesScreen() {
     setItems(newItems);
     setTitle('');
     setBody('');
+    setError('');
     await saveToStorage(STORAGE_KEY, newItems);
   }
 
@@ -66,6 +72,7 @@ export default function NoticesScreen() {
         multiline
         style={[styles.input, styles.inputMultiline]}
       />
+      {error ? <Text style={styles.errorText}>{error}</Text> : null}
       <Pressable style={styles.button} onPress={addNotice}>
         <Text style={styles.buttonText}>Add Notice</Text>
       </Pressable>
@@ -129,6 +136,11 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'white',
     fontWeight: '600',
+  },
+  errorText: {
+    color: '#ef4444',
+    fontSize: 12,
+    marginBottom: 8,
   },
   notice: {
     paddingVertical: 10,
