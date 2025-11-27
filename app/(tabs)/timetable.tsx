@@ -23,8 +23,15 @@ const DEFAULT_TIMETABLE: TimetableEntry[] = [
 const STORAGE_KEY = 'timetable:v1';
 const DAYS: TimetableEntry['day'][] = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
+function getTodayDay(): 'Mon' | 'Tue' | 'Wed' | 'Thu' | 'Fri' | 'Sat' {
+  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const today = new Date().getDay();
+  const dayName = days[today] as 'Mon' | 'Tue' | 'Wed' | 'Thu' | 'Fri' | 'Sat';
+  return dayName === 'Sun' ? 'Mon' : dayName;
+}
+
 export default function TimetableScreen() {
-  const [selectedDay, setSelectedDay] = useState<TimetableEntry['day']>('Mon');
+  const [selectedDay, setSelectedDay] = useState<TimetableEntry['day']>(getTodayDay());
   const [entries, setEntries] = useState<TimetableEntry[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [editingEntry, setEditingEntry] = useState<TimetableEntry | null>(null);
@@ -103,17 +110,27 @@ export default function TimetableScreen() {
     setShowModal(true);
   };
 
+  const todayDay = getTodayDay();
+
   return (
     <View style={styles.container}>
       <RNView style={styles.dayRow}>
+        <Pressable
+          onPress={() => setSelectedDay(todayDay)}
+          style={[styles.todayChip, selectedDay === todayDay && styles.todayChipActive]}>
+          <Text style={[styles.todayChipText, selectedDay === todayDay && styles.todayChipTextActive]}>
+            Today
+          </Text>
+        </Pressable>
         {DAYS.map((d) => (
-          <Text
+          <Pressable
             key={d}
             onPress={() => setSelectedDay(d)}
-            style={[styles.dayChip, selectedDay === d && styles.dayChipActive]}
-          >
-            {d}
-          </Text>
+            style={[styles.dayChip, selectedDay === d && styles.dayChipActive, d === todayDay && styles.dayChipToday]}>
+            <Text style={[styles.dayChipText, selectedDay === d && styles.dayChipTextActive]}>
+              {d}
+            </Text>
+          </Pressable>
         ))}
       </RNView>
 
@@ -194,22 +211,51 @@ const styles = StyleSheet.create({
   },
   dayRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    gap: 8,
     marginBottom: 12,
+  },
+  todayChip: {
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#3b82f6',
+    backgroundColor: '#1e3a8a',
+  },
+  todayChipActive: {
+    backgroundColor: '#3b82f6',
+  },
+  todayChipText: {
+    color: '#93c5fd',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  todayChipTextActive: {
+    color: '#fff',
   },
   dayChip: {
     paddingVertical: 6,
     paddingHorizontal: 10,
     borderRadius: 8,
     borderWidth: 1,
-    opacity: 0.7,
     borderColor: '#222',
-    color: '#e5e7eb',
+    backgroundColor: '#111',
+  },
+  dayChipToday: {
+    borderColor: '#3b82f6',
   },
   dayChipActive: {
-    opacity: 1,
-    fontWeight: 'bold',
+    backgroundColor: '#2563eb',
+    borderColor: '#2563eb',
+  },
+  dayChipText: {
+    color: '#94a3b8',
+    fontSize: 12,
+  },
+  dayChipTextActive: {
     color: '#fff',
+    fontWeight: '600',
   },
   addButton: {
     flexDirection: 'row',
