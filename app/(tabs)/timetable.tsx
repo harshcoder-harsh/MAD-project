@@ -1,6 +1,7 @@
 import { loadFromStorage, saveToStorage } from '@/utils/storage';
 import React, { useEffect, useMemo, useState } from 'react';
-import { FlatList, View as RNView, StyleSheet, Text, View } from 'react-native';
+import { FlatList, View as RNView, StyleSheet, Text, View, TextInput, Pressable, Modal } from 'react-native';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 type TimetableEntry = {
   id: string;
@@ -25,6 +26,11 @@ const DAYS: TimetableEntry['day'][] = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 export default function TimetableScreen() {
   const [selectedDay, setSelectedDay] = useState<TimetableEntry['day']>('Mon');
   const [entries, setEntries] = useState<TimetableEntry[]>([]);
+  const [showModal, setShowModal] = useState(false);
+  const [editingEntry, setEditingEntry] = useState<TimetableEntry | null>(null);
+  const [formSubject, setFormSubject] = useState('');
+  const [formTime, setFormTime] = useState('');
+  const [formRoom, setFormRoom] = useState('');
 
   useEffect(() => {
     (async () => {
@@ -39,9 +45,63 @@ export default function TimetableScreen() {
   }, []);
 
   const filtered = useMemo(
-    () => entries.filter((e) => e.day === selectedDay),
+    () => entries.filter((e) => e.day === selectedDay).sort((a, b) => a.time.localeCompare(b.time)),
     [entries, selectedDay]
   );
+
+  const saveEntry = async () => {
+    if (!formSubject.trim() || !formTime.trim() || !formRoom.trim()) return;
+
+    let updated: TimetableEntry[];
+    if (editingEntry) {
+      updated = entries.map((e) =>
+        e.id === editingEntry.id
+          ? { ...e, subject: formSubject.trim(), time: formTime.trim(), room: formRoom.trim() }
+          : e
+      );
+    } else {
+      updated = [
+        ...entries,
+        {
+          id: String(Date.now()),
+          day: selectedDay,
+          subject: formSubject.trim(),
+          time: formTime.trim(),
+          room: formRoom.trim(),
+        },
+      ];
+    }
+
+    setEntries(updated);
+    await saveToStorage(STORAGE_KEY, updated);
+    setShowModal(false);
+    setEditingEntry(null);
+    setFormSubject('');
+    setFormTime('');
+    setFormRoom('');
+  };
+
+  const deleteEntry = async (id: string) => {
+    const updated = entries.filter((e) => e.id !== id);
+    setEntries(updated);
+    await saveToStorage(STORAGE_KEY, updated);
+  };
+
+  const openEditModal = (entry: TimetableEntry) => {
+    setEditingEntry(entry);
+    setFormSubject(entry.subject);
+    setFormTime(entry.time);
+    setFormRoom(entry.room);
+    setShowModal(true);
+  };
+
+  const openAddModal = () => {
+    setEditingEntry(null);
+    setFormSubject('');
+    setFormTime('');
+    setFormRoom('');
+    setShowModal(true);
+  };
 
   return (
     <View style={styles.container}>
@@ -57,19 +117,71 @@ export default function TimetableScreen() {
         ))}
       </RNView>
 
+      <Pressable style={styles.addButton} onPress={openAddModal}>
+        <FontAwesome name="plus" size={16} color="#fff" />
+        <Text style={styles.addButtonText}>Add Class</Text>
+      </Pressable>
+
       <FlatList
         data={filtered}
         keyExtractor={(item) => item.id}
         ItemSeparatorComponent={() => <RNView style={styles.separator} />}
         renderItem={({ item }) => (
           <RNView style={styles.item}>
-            <Text style={styles.itemSubject}>{item.subject}</Text>
-            <Text style={styles.itemMeta}>{item.time} • {item.room}</Text>
+            <RNView style={styles.itemContent}>
+              <Text style={styles.itemSubject}>{item.subject}</Text>
+              <Text style={styles.itemMeta}>{item.time} • {item.room}</Text>
+            </RNView>
+            <RNView style={styles.itemActions}>
+              <Pressable onPress={() => openEditModal(item)} style={styles.actionButton}>
+                <FontAwesome name="edit" size={14} color="#3b82f6" />
+              </Pressable>
+              <Pressable onPress={() => deleteEntry(item.id)} style={styles.actionButton}>
+                <FontAwesome name="trash" size={14} color="#ef4444" />
+              </Pressable>
+            </RNView>
           </RNView>
         )}
         ListEmptyComponent={<Text style={styles.empty}>No classes for {selectedDay}</Text>}
         contentContainerStyle={filtered.length === 0 ? styles.emptyContainer : undefined}
       />
+
+      <Modal visible={showModal} transparent animationType="slide">
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>{editingEntry ? 'Edit Class' : 'Add Class'}</Text>
+            <TextInput
+              placeholder="Subject"
+              placeholderTextColor="#64748b"
+              value={formSubject}
+              onChangeText={setFormSubject}
+              style={styles.input}
+            />
+            <TextInput
+              placeholder="Time (e.g., 09:00-10:00)"
+              placeholderTextColor="#64748b"
+              value={formTime}
+              onChangeText={setFormTime}
+              style={styles.input}
+            />
+            <TextInput
+              placeholder="Room"
+              placeholderTextColor="#64748b"
+              value={formRoom}
+              onChangeText={setFormRoom}
+              style={styles.input}
+            />
+            <RNView style={styles.modalActions}>
+              <Pressable style={[styles.modalButton, styles.cancelButton]} onPress={() => setShowModal(false)}>
+                <Text style={styles.modalButtonText}>Cancel</Text>
+              </Pressable>
+              <Pressable style={[styles.modalButton, styles.saveButton]} onPress={saveEntry}>
+                <Text style={styles.modalButtonText}>Save</Text>
+              </Pressable>
+            </RNView>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -99,9 +211,28 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#fff',
   },
+  addButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#2563eb',
+    paddingVertical: 10,
+    borderRadius: 8,
+    marginBottom: 12,
+    gap: 8,
+  },
+  addButtonText: {
+    color: '#fff',
+    fontWeight: '600',
+  },
   item: {
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingVertical: 12,
     paddingHorizontal: 10,
+  },
+  itemContent: {
+    flex: 1,
   },
   itemSubject: {
     fontSize: 16,
@@ -112,6 +243,63 @@ const styles = StyleSheet.create({
     marginTop: 4,
     opacity: 0.7,
     color: '#cbd5e1',
+  },
+  itemActions: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  actionButton: {
+    padding: 8,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: '#111',
+    borderRadius: 12,
+    padding: 20,
+    width: '85%',
+    borderWidth: 1,
+    borderColor: '#222',
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#fff',
+    marginBottom: 16,
+  },
+  input: {
+    borderWidth: 1,
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 12,
+    borderColor: '#222',
+    color: '#e5e7eb',
+    backgroundColor: '#000',
+  },
+  modalActions: {
+    flexDirection: 'row',
+    gap: 12,
+    marginTop: 8,
+  },
+  modalButton: {
+    flex: 1,
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  cancelButton: {
+    backgroundColor: '#374151',
+  },
+  saveButton: {
+    backgroundColor: '#2563eb',
+  },
+  modalButtonText: {
+    color: '#fff',
+    fontWeight: '600',
   },
   separator: {
     height: 1,
