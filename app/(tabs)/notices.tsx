@@ -1,7 +1,8 @@
 import { Text, View } from '@/components/Themed';
 import { loadFromStorage, saveToStorage } from '@/utils/storage';
 import React, { useEffect, useState } from 'react';
-import { FlatList, Pressable, StyleSheet, TextInput } from 'react-native';
+import { FlatList, Pressable, StyleSheet, TextInput, View as RNView } from 'react-native';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 type Notice = {
   id: string;
@@ -39,6 +40,12 @@ export default function NoticesScreen() {
     await saveToStorage(STORAGE_KEY, newItems);
   }
 
+  async function deleteNotice(id: string) {
+    const newItems = items.filter((n) => n.id !== id);
+    setItems(newItems);
+    await saveToStorage(STORAGE_KEY, newItems);
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>Notices</Text>
@@ -68,9 +75,16 @@ export default function NoticesScreen() {
         ItemSeparatorComponent={() => <View style={styles.separator} />}
         renderItem={({ item }) => (
           <View style={styles.notice}>
-            <Text style={styles.noticeTitle}>{item.title}</Text>
-            <Text style={styles.noticeBody}>{item.body}</Text>
-            <Text style={styles.noticeTime}>{new Date(item.createdAt).toLocaleString()}</Text>
+            <RNView style={styles.noticeHeader}>
+              <RNView style={styles.noticeContent}>
+                <Text style={styles.noticeTitle}>{item.title}</Text>
+                <Text style={styles.noticeBody}>{item.body}</Text>
+                <Text style={styles.noticeTime}>{new Date(item.createdAt).toLocaleString()}</Text>
+              </RNView>
+              <Pressable onPress={() => deleteNotice(item.id)} style={styles.deleteButton}>
+                <FontAwesome name="trash" size={16} color="#ef4444" />
+              </Pressable>
+            </RNView>
           </View>
         )}
         ListEmptyComponent={<Text style={styles.empty}>No notices yet</Text>}
@@ -118,10 +132,21 @@ const styles = StyleSheet.create({
   notice: {
     paddingVertical: 10,
   },
+  noticeHeader: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+  },
+  noticeContent: {
+    flex: 1,
+  },
   noticeTitle: {
     fontWeight: '600',
     marginBottom: 4,
     color: '#fff',
+  },
+  deleteButton: {
+    padding: 8,
+    marginLeft: 8,
   },
   noticeBody: {
     opacity: 0.85,
