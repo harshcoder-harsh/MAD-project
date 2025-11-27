@@ -95,7 +95,7 @@ export default function HomeScreen() {
         </View>
         {todayClasses.length > 0 ? (
           <View style={styles.classesList}>
-            {todayClasses.map((cls) => (
+            {todayClasses.map((cls: TimetableEntry) => (
               <View key={cls.id} style={styles.classItem}>
                 <View style={styles.classTime}>
                   <Text style={styles.classTimeText}>{cls.time}</Text>

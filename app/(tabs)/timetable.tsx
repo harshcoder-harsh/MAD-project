@@ -3,7 +3,7 @@ import { getTodayDay } from '@/utils/dateUtils';
 import { loadFromStorage, saveToStorage } from '@/utils/storage';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useEffect, useMemo, useState } from 'react';
-import { FlatList, Modal, Pressable, View as RNView, StyleSheet, Text, TextInput, View, TouchableWithoutFeedback } from 'react-native';
+import { FlatList, Modal, Pressable, View as RNView, StyleSheet, Text, TextInput, View } from 'react-native';
 
 type TimetableEntry = {
   id: string;
@@ -170,47 +170,45 @@ export default function TimetableScreen() {
         contentContainerStyle={filtered.length === 0 ? styles.emptyListContainer : undefined}
       />
 
-      <Modal visible={showModal} transparent animationType="slide">
-        <TouchableWithoutFeedback onPress={() => setShowModal(false)}>
-          <View style={styles.modalOverlay}>
-            <TouchableWithoutFeedback onPress={(e) => e.stopPropagation()}>
-              <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>{editingEntry ? 'Edit Class' : 'Add Class'}</Text>
-            <TextInput
-              placeholder="Subject"
-              placeholderTextColor="#64748b"
-              value={formSubject}
-              onChangeText={setFormSubject}
-              style={styles.input}
-            />
-            <TextInput
-              placeholder="Time (e.g., 09:00-10:00)"
-              placeholderTextColor="#64748b"
-              value={formTime}
-              onChangeText={setFormTime}
-              style={styles.input}
-            />
-            <Text style={styles.helperText}>Format: HH:MM-HH:MM (e.g., 09:00-10:00)</Text>
-            <TextInput
-              placeholder="Room"
-              placeholderTextColor="#64748b"
-              value={formRoom}
-              onChangeText={setFormRoom}
-              style={styles.input}
-            />
-            {formError ? <Text style={styles.errorText}>{formError}</Text> : null}
-            <RNView style={styles.modalActions}>
-              <Pressable style={[styles.modalButton, styles.cancelButton]} onPress={() => setShowModal(false)}>
-                <Text style={styles.modalButtonText}>Cancel</Text>
-              </Pressable>
-              <Pressable style={[styles.modalButton, styles.saveButton]} onPress={saveEntry}>
-                <Text style={styles.modalButtonText}>Save</Text>
-              </Pressable>
-            </RNView>
-              </View>
-            </TouchableWithoutFeedback>
-          </View>
-        </TouchableWithoutFeedback>
+      <Modal visible={showModal} transparent animationType="slide" onRequestClose={() => setShowModal(false)}>
+        <Pressable style={styles.modalOverlay} onPress={() => setShowModal(false)}>
+          <Pressable onPress={(e) => e.stopPropagation()}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>{editingEntry ? 'Edit Class' : 'Add Class'}</Text>
+              <TextInput
+                placeholder="Subject"
+                placeholderTextColor="#64748b"
+                value={formSubject}
+                onChangeText={setFormSubject}
+                style={styles.input}
+              />
+              <TextInput
+                placeholder="Time (e.g., 09:00-10:00)"
+                placeholderTextColor="#64748b"
+                value={formTime}
+                onChangeText={setFormTime}
+                style={styles.input}
+              />
+              <Text style={styles.helperText}>Format: HH:MM-HH:MM (e.g., 09:00-10:00)</Text>
+              <TextInput
+                placeholder="Room"
+                placeholderTextColor="#64748b"
+                value={formRoom}
+                onChangeText={setFormRoom}
+                style={styles.input}
+              />
+              {formError ? <Text style={styles.errorText}>{formError}</Text> : null}
+              <RNView style={styles.modalActions}>
+                <Pressable style={[styles.modalButton, styles.cancelButton]} onPress={() => setShowModal(false)}>
+                  <Text style={styles.modalButtonText}>Cancel</Text>
+                </Pressable>
+                <Pressable style={[styles.modalButton, styles.saveButton]} onPress={saveEntry}>
+                  <Text style={styles.modalButtonText}>Save</Text>
+                </Pressable>
+              </RNView>
+            </View>
+          </Pressable>
+        </Pressable>
       </Modal>
     </View>
   );
