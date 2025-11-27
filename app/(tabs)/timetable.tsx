@@ -183,6 +183,7 @@ export default function TimetableScreen() {
               onChangeText={setFormTime}
               style={styles.input}
             />
+            <Text style={styles.helperText}>Format: HH:MM-HH:MM (e.g., 09:00-10:00)</Text>
             <TextInput
               placeholder="Room"
               placeholderTextColor="#64748b"
@@ -333,6 +334,12 @@ const styles = StyleSheet.create({
     color: '#ef4444',
     fontSize: 12,
     marginBottom: 8,
+  },
+  helperText: {
+    color: '#64748b',
+    fontSize: 11,
+    marginTop: -8,
+    marginBottom: 12,
   },
   modalActions: {
     flexDirection: 'row',
