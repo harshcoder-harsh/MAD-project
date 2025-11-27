@@ -4,7 +4,7 @@ import { formatDate } from '@/utils/dateUtils';
 import { loadFromStorage, saveToStorage } from '@/utils/storage';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useEffect, useState } from 'react';
-import { FlatList, Pressable, View as RNView, StyleSheet, TextInput } from 'react-native';
+import { FlatList, Pressable, View as RNView, StyleSheet, TextInput, Keyboard, TouchableWithoutFeedback } from 'react-native';
 
 type Notice = {
   id: string;
@@ -54,10 +54,11 @@ export default function NoticesScreen() {
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.heading}>Notices</Text>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={styles.container}>
+        <Text style={styles.heading}>Notices</Text>
 
-      <TextInput
+        <TextInput
         placeholder="Title"
         placeholderTextColor="#64748b"
         value={title}
@@ -98,7 +99,8 @@ export default function NoticesScreen() {
         ListEmptyComponent={<Text style={styles.empty}>No notices yet</Text>}
         contentContainerStyle={items.length === 0 ? styles.emptyContainer : undefined}
       />
-    </View>
+      </View>
+    </TouchableWithoutFeedback>
   );
 }
 
