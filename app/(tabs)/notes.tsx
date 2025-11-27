@@ -153,11 +153,14 @@ export default function NotesScreen() {
           </View>
         )}
         ListEmptyComponent={
-          <Text style={styles.empty}>
-            {searchQuery ? 'No notes found' : 'No notes yet. Create your first note!'}
-          </Text>
+          <View style={styles.emptyContainer}>
+            <FontAwesome name="sticky-note" size={48} color="#64748b" />
+            <Text style={styles.empty}>
+              {searchQuery ? 'No notes found' : 'No notes yet. Create your first note!'}
+            </Text>
+          </View>
         }
-        contentContainerStyle={filteredNotes.length === 0 ? styles.emptyContainer : undefined}
+        contentContainerStyle={filteredNotes.length === 0 ? styles.emptyListContainer : undefined}
       />
       </View>
     </TouchableWithoutFeedback>
@@ -262,15 +265,21 @@ const styles = StyleSheet.create({
   separator: {
     height: 12,
   },
-  emptyContainer: {
+  emptyListContainer: {
     flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  emptyContainer: {
+    alignItems: 'center',
+    paddingVertical: 40,
   },
   empty: {
     opacity: 0.6,
     color: '#cbd5e1',
     textAlign: 'center',
+    marginTop: 12,
+    fontSize: 14,
   },
   errorText: {
     color: '#ef4444',

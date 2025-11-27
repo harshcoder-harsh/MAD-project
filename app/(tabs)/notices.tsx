@@ -96,8 +96,13 @@ export default function NoticesScreen() {
             </RNView>
           </View>
         )}
-        ListEmptyComponent={<Text style={styles.empty}>No notices yet</Text>}
-        contentContainerStyle={items.length === 0 ? styles.emptyContainer : undefined}
+        ListEmptyComponent={
+          <View style={styles.emptyContainer}>
+            <FontAwesome name="bullhorn" size={48} color="#64748b" />
+            <Text style={styles.empty}>No notices yet</Text>
+          </View>
+        }
+        contentContainerStyle={items.length === 0 ? styles.emptyListContainer : undefined}
       />
       </View>
     </TouchableWithoutFeedback>
@@ -181,14 +186,20 @@ const styles = StyleSheet.create({
   separator: {
     height: 12,
   },
-  emptyContainer: {
+  emptyListContainer: {
     flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
+  emptyContainer: {
+    alignItems: 'center',
+    paddingVertical: 40,
+  },
   empty: {
     opacity: 0.6,
     color: '#cbd5e1',
+    marginTop: 12,
+    fontSize: 14,
   },
 });
 
