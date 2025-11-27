@@ -32,6 +32,7 @@ export default function TimetableScreen() {
   const [formSubject, setFormSubject] = useState('');
   const [formTime, setFormTime] = useState('');
   const [formRoom, setFormRoom] = useState('');
+  const [formError, setFormError] = useState('');
 
   useEffect(() => {
     (async () => {
@@ -51,7 +52,11 @@ export default function TimetableScreen() {
   );
 
   const saveEntry = async () => {
-    if (!formSubject.trim() || !formTime.trim() || !formRoom.trim()) return;
+    setFormError('');
+    if (!formSubject.trim() || !formTime.trim() || !formRoom.trim()) {
+      setFormError('Please fill in all fields');
+      return;
+    }
 
     let updated: TimetableEntry[];
     if (editingEntry) {
@@ -80,6 +85,7 @@ export default function TimetableScreen() {
     setFormSubject('');
     setFormTime('');
     setFormRoom('');
+    setFormError('');
   };
 
   const deleteEntry = async (id: string) => {
@@ -93,6 +99,7 @@ export default function TimetableScreen() {
     setFormSubject(entry.subject);
     setFormTime(entry.time);
     setFormRoom(entry.room);
+    setFormError('');
     setShowModal(true);
   };
 
@@ -101,6 +108,7 @@ export default function TimetableScreen() {
     setFormSubject('');
     setFormTime('');
     setFormRoom('');
+    setFormError('');
     setShowModal(true);
   };
 
@@ -182,6 +190,7 @@ export default function TimetableScreen() {
               onChangeText={setFormRoom}
               style={styles.input}
             />
+            {formError ? <Text style={styles.errorText}>{formError}</Text> : null}
             <RNView style={styles.modalActions}>
               <Pressable style={[styles.modalButton, styles.cancelButton]} onPress={() => setShowModal(false)}>
                 <Text style={styles.modalButtonText}>Cancel</Text>
@@ -319,6 +328,11 @@ const styles = StyleSheet.create({
     borderColor: '#222',
     color: '#e5e7eb',
     backgroundColor: '#000',
+  },
+  errorText: {
+    color: '#ef4444',
+    fontSize: 12,
+    marginBottom: 8,
   },
   modalActions: {
     flexDirection: 'row',
