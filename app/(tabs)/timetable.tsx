@@ -1,3 +1,4 @@
+import { STORAGE_KEYS } from '@/constants/StorageKeys';
 import { getTodayDay } from '@/utils/dateUtils';
 import { loadFromStorage, saveToStorage } from '@/utils/storage';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
@@ -21,7 +22,6 @@ const DEFAULT_TIMETABLE: TimetableEntry[] = [
   { id: '6', day: 'Fri', time: '12:00-13:00', subject: 'Contest', room: 'E104' },
 ];
 
-const STORAGE_KEY = 'timetable:v1';
 const DAYS: TimetableEntry['day'][] = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 export default function TimetableScreen() {
@@ -36,12 +36,12 @@ export default function TimetableScreen() {
 
   useEffect(() => {
     (async () => {
-      const saved = await loadFromStorage<TimetableEntry[]>(STORAGE_KEY);
+      const saved = await loadFromStorage<TimetableEntry[]>(STORAGE_KEYS.TIMETABLE);
       if (saved && saved.length > 0) {
         setEntries(saved);
       } else {
         setEntries(DEFAULT_TIMETABLE);
-        await saveToStorage(STORAGE_KEY, DEFAULT_TIMETABLE);
+        await saveToStorage(STORAGE_KEYS.TIMETABLE, DEFAULT_TIMETABLE);
       }
     })();
   }, []);
@@ -91,7 +91,7 @@ export default function TimetableScreen() {
   const deleteEntry = async (id: string) => {
     const updated = entries.filter((e) => e.id !== id);
     setEntries(updated);
-    await saveToStorage(STORAGE_KEY, updated);
+    await saveToStorage(STORAGE_KEYS.TIMETABLE, updated);
   };
 
   const openEditModal = (entry: TimetableEntry) => {

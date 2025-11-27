@@ -1,8 +1,9 @@
-import { loadFromStorage } from '@/utils/storage';
+import { STORAGE_KEYS } from '@/constants/StorageKeys';
 import { getTodayDay } from '@/utils/dateUtils';
+import { loadFromStorage } from '@/utils/storage';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { useRouter, useFocusEffect } from 'expo-router';
-import { useEffect, useState, useCallback } from 'react';
+import { useFocusEffect, useRouter } from 'expo-router';
+import { useCallback, useState } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 type TimetableEntry = {
@@ -42,9 +43,9 @@ export default function HomeScreen() {
   );
 
   async function loadData() {
-    const timetable = await loadFromStorage<TimetableEntry[]>('timetable:v1');
-    const notices = await loadFromStorage<Notice[]>('notices:v1');
-    const notes = await loadFromStorage<Note[]>('notes:v1');
+    const timetable = await loadFromStorage<TimetableEntry[]>(STORAGE_KEYS.TIMETABLE);
+    const notices = await loadFromStorage<Notice[]>(STORAGE_KEYS.NOTICES);
+    const notes = await loadFromStorage<Note[]>(STORAGE_KEYS.NOTES);
 
     if (timetable) {
       const today = timetable.filter((e) => e.day === todayDay);

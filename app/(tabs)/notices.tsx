@@ -1,9 +1,10 @@
 import { Text, View } from '@/components/Themed';
-import { loadFromStorage, saveToStorage } from '@/utils/storage';
+import { STORAGE_KEYS } from '@/constants/StorageKeys';
 import { formatDate } from '@/utils/dateUtils';
-import React, { useEffect, useState } from 'react';
-import { FlatList, Pressable, StyleSheet, TextInput, View as RNView } from 'react-native';
+import { loadFromStorage, saveToStorage } from '@/utils/storage';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { useEffect, useState } from 'react';
+import { FlatList, Pressable, View as RNView, StyleSheet, TextInput } from 'react-native';
 
 type Notice = {
   id: string;
@@ -12,7 +13,6 @@ type Notice = {
   createdAt: number;
 };
 
-const STORAGE_KEY = 'notices:v1';
 
 export default function NoticesScreen() {
   const [items, setItems] = useState<Notice[]>([]);
@@ -22,7 +22,7 @@ export default function NoticesScreen() {
 
   useEffect(() => {
     (async () => {
-      const existing = await loadFromStorage<Notice[]>(STORAGE_KEY);
+      const existing = await loadFromStorage<Notice[]>(STORAGE_KEYS.NOTICES);
       if (existing) setItems(existing);
     })();
   }, []);

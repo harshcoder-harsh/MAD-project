@@ -1,3 +1,4 @@
+import { STORAGE_KEYS } from '@/constants/StorageKeys';
 import { formatDate } from '@/utils/dateUtils';
 import { loadFromStorage, saveToStorage } from '@/utils/storage';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
@@ -12,7 +13,6 @@ type Note = {
   updatedAt: number;
 };
 
-const STORAGE_KEY = 'notes:v1';
 
 export default function NotesScreen() {
   const [notes, setNotes] = useState<Note[]>([]);
@@ -24,7 +24,7 @@ export default function NotesScreen() {
 
   useEffect(() => {
     (async () => {
-      const saved = await loadFromStorage<Note[]>(STORAGE_KEY);
+      const saved = await loadFromStorage<Note[]>(STORAGE_KEYS.NOTES);
       if (saved) setNotes(saved);
     })();
   }, []);
@@ -61,7 +61,7 @@ export default function NotesScreen() {
     }
 
     setNotes(updated);
-    await saveToStorage(STORAGE_KEY, updated);
+    await saveToStorage(STORAGE_KEYS.NOTES, updated);
     setTitle('');
     setContent('');
     setEditingId(null);
@@ -71,7 +71,7 @@ export default function NotesScreen() {
   async function deleteNote(id: string) {
     const updated = notes.filter((n) => n.id !== id);
     setNotes(updated);
-    await saveToStorage(STORAGE_KEY, updated);
+    await saveToStorage(STORAGE_KEYS.NOTES, updated);
   }
 
   function startEdit(note: Note) {
