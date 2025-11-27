@@ -20,6 +20,7 @@ export default function NotesScreen() {
   const [content, setContent] = useState('');
   const [editingId, setEditingId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [error, setError] = useState('');
 
   useEffect(() => {
     (async () => {
@@ -35,7 +36,11 @@ export default function NotesScreen() {
   );
 
   async function saveNote() {
-    if (!title.trim() || !content.trim()) return;
+    setError('');
+    if (!title.trim() || !content.trim()) {
+      setError('Please fill in both title and content');
+      return;
+    }
 
     let updated: Note[];
     if (editingId) {
@@ -60,6 +65,7 @@ export default function NotesScreen() {
     setTitle('');
     setContent('');
     setEditingId(null);
+    setError('');
   }
 
   async function deleteNote(id: string) {
@@ -78,6 +84,7 @@ export default function NotesScreen() {
     setEditingId(null);
     setTitle('');
     setContent('');
+    setError('');
   }
 
   return (
@@ -107,6 +114,7 @@ export default function NotesScreen() {
         multiline
         style={[styles.input, styles.inputMultiline]}
       />
+      {error ? <Text style={styles.errorText}>{error}</Text> : null}
       <View style={styles.buttonRow}>
         {editingId && (
           <Pressable style={[styles.button, styles.cancelButton]} onPress={cancelEdit}>
@@ -258,6 +266,11 @@ const styles = StyleSheet.create({
     opacity: 0.6,
     color: '#cbd5e1',
     textAlign: 'center',
+  },
+  errorText: {
+    color: '#ef4444',
+    fontSize: 12,
+    marginBottom: 8,
   },
 });
 
