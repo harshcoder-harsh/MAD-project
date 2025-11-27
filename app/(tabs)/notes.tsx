@@ -3,7 +3,7 @@ import { formatDate } from '@/utils/dateUtils';
 import { loadFromStorage, saveToStorage } from '@/utils/storage';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useEffect, useState } from 'react';
-import { FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { FlatList, Pressable, StyleSheet, Text, TextInput, View, Keyboard, TouchableWithoutFeedback } from 'react-native';
 
 type Note = {
   id: string;
@@ -88,8 +88,9 @@ export default function NotesScreen() {
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.heading}>Notes</Text>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={styles.container}>
+        <Text style={styles.heading}>Notes</Text>
 
       <TextInput
         placeholder="Search notes..."
@@ -158,7 +159,8 @@ export default function NotesScreen() {
         }
         contentContainerStyle={filteredNotes.length === 0 ? styles.emptyContainer : undefined}
       />
-    </View>
+      </View>
+    </TouchableWithoutFeedback>
   );
 }
 
