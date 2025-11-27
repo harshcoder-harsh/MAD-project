@@ -1,8 +1,8 @@
-import { loadFromStorage, saveToStorage } from '@/utils/storage';
 import { formatDate } from '@/utils/dateUtils';
-import React, { useEffect, useState } from 'react';
-import { FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { loadFromStorage, saveToStorage } from '@/utils/storage';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { useEffect, useState } from 'react';
+import { FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
 type Note = {
   id: string;
@@ -219,6 +219,11 @@ const styles = StyleSheet.create({
   },
   note: {
     paddingVertical: 12,
+    paddingHorizontal: 12,
+    backgroundColor: '#111',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#222',
   },
   noteHeader: {
     flexDirection: 'row',
@@ -253,9 +258,7 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   separator: {
-    height: 1,
-    backgroundColor: '#1f2937',
-    opacity: 0.5,
+    height: 12,
   },
   emptyContainer: {
     flexGrow: 1,
