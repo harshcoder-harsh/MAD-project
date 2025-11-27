@@ -1,8 +1,8 @@
 import { loadFromStorage } from '@/utils/storage';
-import React, { useEffect, useMemo, useState } from 'react';
-import { StyleSheet, Image, Text, View, ScrollView, Pressable } from 'react-native';
-import { useRouter } from 'expo-router';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { useRouter } from 'expo-router';
+import { useEffect, useState } from 'react';
+import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 type TimetableEntry = {
   id: string;
@@ -26,13 +26,6 @@ type Note = {
   createdAt: number;
   updatedAt: number;
 };
-
-function getTodayDay(): 'Mon' | 'Tue' | 'Wed' | 'Thu' | 'Fri' | 'Sat' {
-  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  const today = new Date().getDay();
-  const dayName = days[today] as 'Mon' | 'Tue' | 'Wed' | 'Thu' | 'Fri' | 'Sat';
-  return dayName === 'Sun' ? 'Mon' : dayName;
-}
 
 export default function HomeScreen() {
   const router = useRouter();

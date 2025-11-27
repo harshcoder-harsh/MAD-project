@@ -1,4 +1,5 @@
 import { loadFromStorage, saveToStorage } from '@/utils/storage';
+import { getTodayDay } from '@/utils/dateUtils';
 import React, { useEffect, useMemo, useState } from 'react';
 import { FlatList, View as RNView, StyleSheet, Text, View, TextInput, Pressable, Modal } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
@@ -22,13 +23,6 @@ const DEFAULT_TIMETABLE: TimetableEntry[] = [
 
 const STORAGE_KEY = 'timetable:v1';
 const DAYS: TimetableEntry['day'][] = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
-function getTodayDay(): 'Mon' | 'Tue' | 'Wed' | 'Thu' | 'Fri' | 'Sat' {
-  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  const today = new Date().getDay();
-  const dayName = days[today] as 'Mon' | 'Tue' | 'Wed' | 'Thu' | 'Fri' | 'Sat';
-  return dayName === 'Sun' ? 'Mon' : dayName;
-}
 
 export default function TimetableScreen() {
   const [selectedDay, setSelectedDay] = useState<TimetableEntry['day']>(getTodayDay());
