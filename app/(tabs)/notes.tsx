@@ -1,4 +1,5 @@
 import { loadFromStorage, saveToStorage } from '@/utils/storage';
+import { formatDate } from '@/utils/dateUtils';
 import React, { useEffect, useState } from 'react';
 import { FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
@@ -129,9 +130,7 @@ export default function NotesScreen() {
                 <Text style={styles.noteText} numberOfLines={3}>
                   {item.content}
                 </Text>
-                <Text style={styles.noteTime}>
-                  {new Date(item.updatedAt).toLocaleDateString()}
-                </Text>
+                <Text style={styles.noteTime}>{formatDate(item.updatedAt)}</Text>
               </View>
               <View style={styles.noteActions}>
                 <Pressable onPress={() => startEdit(item)} style={styles.actionButton}>

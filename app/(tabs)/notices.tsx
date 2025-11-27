@@ -1,5 +1,6 @@
 import { Text, View } from '@/components/Themed';
 import { loadFromStorage, saveToStorage } from '@/utils/storage';
+import { formatDate } from '@/utils/dateUtils';
 import React, { useEffect, useState } from 'react';
 import { FlatList, Pressable, StyleSheet, TextInput, View as RNView } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
@@ -79,7 +80,7 @@ export default function NoticesScreen() {
               <RNView style={styles.noticeContent}>
                 <Text style={styles.noticeTitle}>{item.title}</Text>
                 <Text style={styles.noticeBody}>{item.body}</Text>
-                <Text style={styles.noticeTime}>{new Date(item.createdAt).toLocaleString()}</Text>
+                <Text style={styles.noticeTime}>{formatDate(item.createdAt)}</Text>
               </RNView>
               <Pressable onPress={() => deleteNotice(item.id)} style={styles.deleteButton}>
                 <FontAwesome name="trash" size={16} color="#ef4444" />
