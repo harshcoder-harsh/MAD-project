@@ -1,0 +1,23 @@
+═══════════════════════════════════════════════════════════
+   QUICK START - COPY THESE COMMANDS
+═══════════════════════════════════════════════════════════
+
+In your terminal, run these commands ONE BY ONE:
+
+1. source ~/.nvm/nvm.sh
+
+2. nvm use 20
+
+3. npx expo start
+
+═══════════════════════════════════════════════════════════
+
+After running "npx expo start":
+- Wait 10-15 seconds
+- A QR code will appear
+- Open Expo Go app on your Android phone
+- Scan the QR code
+- Your app will load!
+
+═══════════════════════════════════════════════════════════
+
